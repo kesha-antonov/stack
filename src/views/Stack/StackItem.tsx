@@ -56,7 +56,7 @@ type Props = {
   cardStyleInterpolator: CardStyleInterpolator;
   headerMode: HeaderMode;
   headerTransparent?: boolean;
-  floaingHeaderHeight: number;
+  floatingHeaderHeight: number;
   hasCustomHeader: boolean;
 };
 
@@ -100,7 +100,7 @@ export default class StackItem extends React.PureComponent<Props> {
       transitionSpec,
       headerStyleInterpolator,
       cardStyleInterpolator,
-      floaingHeaderHeight,
+      floatingHeaderHeight,
       hasCustomHeader,
       getPreviousRoute,
       headerMode,
@@ -136,7 +136,7 @@ export default class StackItem extends React.PureComponent<Props> {
         pointerEvents="box-none"
         containerStyle={
           headerMode === 'float' && !headerTransparent && !hasCustomHeader
-            ? { marginTop: floaingHeaderHeight }
+            ? { marginTop: floatingHeaderHeight }
             : null
         }
         contentStyle={cardStyle}

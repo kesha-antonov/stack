@@ -6,7 +6,7 @@ export const TransitionIOSSpec: TransitionSpec = {
   timing: 'spring',
   config: {
     stiffness: 1000,
-    damping: 500,
+    damping: 250,
     mass: 3,
     overshootClamping: true,
     restDisplacementThreshold: 0.01,

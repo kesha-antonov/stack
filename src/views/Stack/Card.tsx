@@ -94,12 +94,34 @@ const {
   Value,
 } = Animated;
 
+class LazyCode extends React.Component {
+  state = { ready: false };
+
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      this.setState({ ready: true });
+    })
+  }
+
+  render() {
+    if (!this.state.ready) {
+      return null;
+    }
+
+    return <Animated.Code exec={this.props.exec} />;
+  }
+}
+
 export default class Card extends React.Component<Props> {
   static defaultProps = {
     overlayEnabled: Platform.OS !== 'ios',
     shadowEnabled: true,
     gesturesEnabled: true,
   };
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.active;
+  }
 
   componentDidUpdate(prevProps: Props) {
     const { layout, direction, closing } = this.props;
@@ -501,7 +523,7 @@ export default class Card extends React.Component<Props> {
     return (
       <StackGestureContext.Provider value={this.gestureRef}>
         <View pointerEvents="box-none" {...rest}>
-          <Animated.Code exec={this.exec} />
+          <LazyCode exec={this.exec} />
           {overlayEnabled && overlayStyle ? (
             <Animated.View
               pointerEvents="none"
@@ -589,6 +611,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   opaque: {
-    backgroundColor: '#eee',
+    backgroundColor: '#fff',
   },
 });

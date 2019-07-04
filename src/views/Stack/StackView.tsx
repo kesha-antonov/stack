@@ -47,6 +47,28 @@ type State = {
   descriptors: Descriptors;
 };
 
+class DelayedSceneView extends React.Component<any, any> {
+  state = {
+    ready: false,
+  }
+
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.setState({ ready: true });
+      })
+    });
+  }
+
+  render() {
+    if (!this.state.ready) {
+      return null;
+    }
+
+    return <SceneView {...this.props} />
+  }
+}
+
 class StackView extends React.Component<Props, State> {
   static getDerivedStateFromProps(
     props: Readonly<Props>,
@@ -219,7 +241,7 @@ class StackView extends React.Component<Props, State> {
     const SceneComponent = getComponent();
 
     return (
-      <SceneView
+      <DelayedSceneView
         screenProps={this.props.screenProps}
         navigation={navigation}
         component={SceneComponent}

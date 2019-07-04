@@ -3,7 +3,38 @@ import { StackActions } from '@react-navigation/core';
 import HeaderSegment from './HeaderSegment';
 import { HeaderProps } from '../../types';
 
-export default class Header extends React.PureComponent<HeaderProps> {
+class LazyHeaderSegment extends React.Component {
+  state = { ready: false };
+
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.setState({ ready: true });
+      });
+    })
+  }
+
+  render() {
+    if (!this.state.ready) {
+      return null;
+    }
+
+    return <HeaderSegment {...this.props} />;
+  }
+}
+
+
+export default class Header extends React.Component<HeaderProps> {
+
+  // lol no
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.scene.descriptor === this.props.scene.descriptor) {
+      return false;
+    }
+
+    return true;
+  }
+
   render() {
     const {
       scene,
@@ -38,7 +69,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
     }
 
     return (
-      <HeaderSegment
+      <LazyHeaderSegment
         {...options}
         layout={layout}
         scene={scene}

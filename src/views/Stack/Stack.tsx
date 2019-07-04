@@ -64,7 +64,7 @@ type State = {
   scenes: HeaderScene<Route>[];
   progress: ProgressValues;
   layout: Layout;
-  floaingHeaderHeight: number;
+  floatingHeaderHeight: number;
 };
 
 const dimensions = Dimensions.get('window');
@@ -159,7 +159,7 @@ export default class Stack extends React.Component<Props, State> {
     // This is not a great heuristic here. We don't know synchronously
     // on mount what the header height is so we have just used the most
     // common cases here.
-    floaingHeaderHeight: getDefaultHeaderHeight(layout),
+    floatingHeaderHeight: getDefaultHeaderHeight(layout),
   };
 
   private handleLayout = (e: LayoutChangeEvent) => {
@@ -180,8 +180,10 @@ export default class Stack extends React.Component<Props, State> {
   private handleFloatingHeaderLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
 
-    if (height !== this.state.floaingHeaderHeight) {
-      this.setState({ floaingHeaderHeight: height });
+    // lol you can't just not update if height is 0 ofc, this is a quick workaround
+    // for testing the impact on delaying rendering new header segment
+    if (height !== this.state.floatingHeaderHeight && height !== 0) {
+      this.setState({ floatingHeaderHeight: height });
     }
   };
 
@@ -209,7 +211,7 @@ export default class Stack extends React.Component<Props, State> {
       headerStyleInterpolator,
     } = this.props;
 
-    const { scenes, layout, progress, floaingHeaderHeight } = this.state;
+    const { scenes, layout, progress, floatingHeaderHeight } = this.state;
     const focusedRoute = navigation.state.routes[navigation.state.index];
 
     return (
@@ -274,7 +276,7 @@ export default class Stack extends React.Component<Props, State> {
                   transitionSpec={transitionSpec}
                   headerStyleInterpolator={headerStyleInterpolator}
                   cardStyleInterpolator={cardStyleInterpolator}
-                  floaingHeaderHeight={floaingHeaderHeight}
+                  floatingHeaderHeight={floatingHeaderHeight}
                   hasCustomHeader={header === null}
                   getPreviousRoute={getPreviousRoute}
                   headerMode={headerMode}

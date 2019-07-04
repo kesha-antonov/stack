@@ -18,6 +18,25 @@ const NOOP = 0;
 
 const { block, greaterThan, cond, set, call, onChange } = Animated;
 
+class LazyCode extends React.Component {
+  state = { ready: false };
+
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      this.setState({ ready: true });
+    })
+  }
+
+  render() {
+    if (!this.state.ready) {
+      return null;
+    }
+
+    return <Animated.Code exec={this.props.exec} />;
+  }
+}
+
+
 /**
  * Component that automatically computes the `pointerEvents` property
  * whenever position changes.
@@ -55,7 +74,7 @@ export default class PointerEventsView extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <Animated.Code exec={this.exec} />
+        <LazyCode exec={this.exec} />
         <View ref={c => (this.root = c)} {...rest} />
       </React.Fragment>
     );
